@@ -1,1 +1,1 @@
-# Shopping
+# Práctica de carrito de compra.
