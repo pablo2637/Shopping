@@ -11,14 +11,46 @@
 
 <body>
     <header>
-        <h1>Shopping Cart</h1>        
+        <div id="divStatus">
+            <p id="pStatus">Status: <span></span></p>
+            <p id="pReadyStatus">OK: <span></span></p>
+            <p id="pError"></p>
+        </div>
+
+        <h1>Shopping Cart</h1>
     </header>
 
     <main>
-        <section id="secLista">
-            
-        </section>
+        <!-- <div id="cesta"> -->
+            <!-- <div id="divCesta" class="cesta"> -->
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Imagen</th>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Subtotal</th>
+                            <th><button id="btnOcultar" class="cesta">Cerrar</button></th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">Total: 0€</td>
+                        </tr>
+
+                    </tfoot>
+                </table>
+
+                <button id="btnVaciarCesta" class="cesta">Vaciar Cesta</button>
+                <button id="btnFinalizar" class="cesta">Finalizar</button>
+
+            </div>
+        <!-- </div> -->
     </main>
 
     <footer>

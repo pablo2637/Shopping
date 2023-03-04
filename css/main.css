@@ -7,7 +7,6 @@
 body {
     font-family: 'Lucida Sans';
     min-width: 300px;
-    border: 1px solid green;
     margin: 0 auto;
 }
 
@@ -28,27 +27,125 @@ h1 {
     justify-content: right;
 }
 
-#divStatus {
+#divCesta {
+    width: 600px;
+    /* height: 350px; */
+    background-color: rgb(255, 255, 255);
+    border: 1px solid black;
+    box-shadow: 2px 2px 10px 2px black;
     position: absolute;
+    right: 20px;
+    top: 170px;
+}
+
+table {
+    width: 95%;
+    margin: 5px auto;
+    text-align: center;
+    border-collapse: collapse;
+    align-items: center;
+}
+
+.producto {
+    text-align: left;
+    text-indent: 5px;
+}
+
+th {
+    border-bottom: 2px solid black;
+}
+
+tr {
+    height: 40px;
+}
+
+td:not(:last-child) {
+    border-bottom: 1px dotted black;
+}
+
+tfoot {
+    text-align: right;
+    font-size: 1.2em;
+    border-top: 2px solid black;
+}
+
+tbody {
+    font-size: 0.9em;
+}
+
+tbody button {
+    text-align: center;
+    border: none;
+    background-color: rgb(255, 255, 255);
+    font-weight: bold;
+    border-radius: 100%;
+    color: rgb(3, 67, 163);
+    box-shadow: 0 0 3px 2px rgb(3, 67, 163);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+tbody td:last-child button {
+    background-color: white;
+    color:red;
+    box-shadow: 0 0 3px 2px rgb(252, 1, 1);
+}
+
+.cantidad {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    height: 50px;
+    align-content: center;
+    align-items: center;
+    justify-items: center;
+}
+
+tbody tr td img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+#btnVaciarCesta,
+#btnComprar {
+    padding: 8px 15px;
+    margin: 10px;
+    background-color: rgb(255, 255, 255);    
+    border: none;
+    box-shadow: 0 0 3px 2px rgb(0, 0, 0);
+    cursor: pointer;
+}
+
+#btnComprar {
+    float: right;
+}
+
+#divStatus {
+    position: static;
     background-color: rgba(0, 0, 0, 0.103);
     border: 1px solid black;
     color: rgb(241, 241, 241);
     padding: 5px;
-
-    width: 170px;
+    display: inline-block;
+    /* width: 170px; */
     font-size: 0.6em;
-    top: 97px;
+    top: 1px;
+}
+
+#divStatus p:last-child {
+    color: rgb(5, 55, 86);
 }
 
 .secCategorias,
 .secItems {
-    /* width: 98%; */
     margin: 0 auto;
 }
 
 .secCategorias h2,
 .secItems h2 {
     font-size: 1.2em;
+    margin: 20px 0;
 }
 
 .divGridContCat,
@@ -56,7 +153,7 @@ h1 {
     display: grid;
     grid-template-columns: 1fr;
     justify-items: center;
-    row-gap: 10px;
+    row-gap: 30px;
     margin: 0 auto;
 }
 
@@ -79,6 +176,8 @@ h1 {
     display: grid;
     justify-items: center;
     cursor: pointer;
+    max-width: 320px;
+    text-align: center;
 }
 
 .divCardItem:hover {
@@ -89,7 +188,11 @@ h1 {
 .divCardCat img {
     border-radius: 10px;
     border: 1px solid rgb(34, 33, 33);
-    max-width: 300px;
+    width: 300px;
+    height: 250px;
+    padding: 5px;
+    background-color: white;
+    object-fit: contain;
     box-shadow: 0 0 3px black;
 }
 
@@ -105,8 +208,12 @@ h1 {
 }
 
 .divCardItem>img {
-    max-width: 220px;
+    width: 250px;
+    height: 250px;
+    object-fit: contain;
+    background-color: white;
     border-radius: 5px;
+    padding: 5px;
     box-shadow: 0 0 2px 1px black;
 }
 
@@ -187,9 +294,12 @@ footer p {
         font-size: 2.5em;
     }
 
-    .secCategorias h2,
-    .secItems h2 {
+    .secCategorias h2 {
         font-size: 1.6em;
+    }
+
+    .secItems h2 {
+        font-size: 1.3em;
     }
 
     .divCardCat {
@@ -204,29 +314,29 @@ footer p {
         grid-template-columns: 1fr 1fr;
     }
 
-    .divCardItem img {
-        max-width: 180px;
+    .divCardItem {
+        max-width: 200px;
+    }
+
+    .divCardItem>img {
+        width: 180px;
+        height: 250px;
     }
 
     #divStatus {
-        width: 200px;
+        /* width: 200px; */
         font-size: 0.6em;
-        top: 110px;
     }
 }
 
 @media screen and (min-width:500px) {
-    .divCardItem img {
-        max-width: 185px;
-    }
-}
-
-@media screen and (min-width:600px) {
-    .divGridContItem {
-        grid-template-columns: 1fr 1fr 1fr;
-        column-gap: 5px;
+    .divCardItem>img {
+        width: 200px;
     }
 
+    .divCardItem {
+        max-width: 230px;
+    }
 }
 
 @media screen and (min-width:640px) {
@@ -235,13 +345,28 @@ footer p {
         column-gap: 5px;
     }
 
+
+
     .divCardCat img {
         max-width: 280px;
     }
 
-    .divCardItem img {
-        max-width: 190px;
+}
+
+@media screen and (min-width:710px) {
+    .divGridContItem {
+        grid-template-columns: 1fr 1fr 1fr;
+        column-gap: 3px;
     }
+
+    .divCardItem {
+        max-width: 220px;
+    }
+
+    .divCardItem>img {
+        width: 200px;
+    }
+
 }
 
 @media screen and (min-width:768px) {
@@ -261,7 +386,7 @@ footer p {
         max-width: 330px;
     }
 
-    .divCardItem img {
+    .divCardItem>img {
         max-width: 210px;
     }
 
@@ -271,9 +396,8 @@ footer p {
     }
 
     #divStatus {
-        width: 220px;
+        /* width: 220px; */
         font-size: 0.7em;
-        top: 120px;
     }
 }
 
@@ -282,8 +406,11 @@ footer p {
         font-size: 4em;
     }
 
-    .secCategorias h2,
     .secItems h2 {
+        font-size: 1.9em;
+    }
+
+    .secCategorias h2 {
         font-size: 2.4em;
     }
 
@@ -305,9 +432,8 @@ footer p {
     }
 
     #divStatus {
-        width: 250px;
+        /* width: 250px; */
         font-size: 0.8em;
-        top: 130px;
     }
 }
 
@@ -334,8 +460,7 @@ footer p {
     }
 
     #divStatus {
-        width: 280px;
+        /* width: 280px; */
         font-size: 0.9em;
-        top: 147px;
     }
 }
