@@ -375,9 +375,7 @@ tbody tr td img {
 footer {
     margin-top: 20px;
     background-color: lightcoral;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
+
 }
 
 footer p {
