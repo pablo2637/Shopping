@@ -5,9 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const divGridContCat = document.querySelector('.divGridContCat')
     const divGridContItem = document.querySelector('.divGridContItem');
     const secItems = document.querySelector('.secItems');
+    const h2SecItems = document.querySelector('.secItems h2');
     const secCategorias = document.querySelector('.secCategorias');
     const divCesta = document.querySelector('#divCesta');
-    // const iCesta = document.querySelector('#cesta');
     const tbody = document.querySelector('tbody');
     const tdFootPrecio = document.querySelector('tfoot td');
     const pStatus = document.querySelector('#pStatus span');
@@ -32,37 +32,40 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const arrayCesta = JSON.parse(localStorage.getItem("arrayCesta")) || [];
+    let ultCategoria = '';
+
 
     //EVENTOS
     body.addEventListener('click', ({ target }) => {
+        //Cart.html
+        if (target.matches('i') && target.parentNode.id == 'btnSeguir') location.assign(`index.html?site=continue&cat=${ultCategoria}`);
 
+        //Carrito
         if (target.classList.contains("cesta")) {
-            if (target.matches('i')) divCesta.classList.toggle('ocultar');
+            if (target.matches('i') && target.parentNode.id == 'btnCesta') divCesta.classList.toggle('ocultar');
 
-            if (target.matches('button')) {
-                if (target.classList.contains('add')) addCartItem(target.parentNode.parentNode.id);
-                else if (target.classList.contains('remove')) subCartItem(target.parentNode.parentNode.id);
-                else if (target.classList.contains('empty')) removeCartItem(target.parentNode.parentNode.id);
-                else if (target.id == 'btnVaciarCesta') emptyCart();
-                else if (target.id == 'btnComprar') location.assign('cart.html?pag=2')
-                else if (target.id == 'btnOcultar') divCesta.classList.toggle('ocultar');
-            }
+            if (target.classList.contains('add')) addCartItem(target.parentNode.parentNode.id);
+            else if (target.classList.contains('remove')) subCartItem(target.parentNode.parentNode.id);
+            else if (target.classList.contains('empty')) removeCartItem(target.parentNode.parentNode.id);
+            else if (target.id == 'btnVaciarCesta' || target.parentNode.id == 'btnVaciarCesta') emptyCart();
+            else if (target.id == 'btnComprar' || target.parentNode.id == 'btnComprar') location.assign(`cart.html?site=cart&cat=${h2SecItems.id.replace('!', '')}`);
+            else if (target.id == 'btnOcultar') divCesta.classList.toggle('ocultar');
         }
 
+        //Card Items
         if (target.classList.contains('item')) {
             if (target.matches('button')) fetchID(target.parentNode.id);
         }
 
+        //Card Categoria
         if (target.classList.contains('categoria')) {
-            if (target.id != '' &&
-                target.parentNode.classList.contains('divGridContCat')) {
-                msg(`ev click: target ${target.id}`)
-                secItems.classList.toggle('ocultar');
-                fetchItems(target.id);
-            } else if (target.parentNode.id != '' &&
-                target.parentNode.parentNode.classList.contains('divGridContCat')) {
-                msg(`ev click: .parentNode ${target.parentNode.id}`)
-                secItems.classList.toggle('ocultar');
+            if (secItems.classList.contains('ocultar')) secItems.classList.toggle('ocultar');
+
+            if (target.matches('h3')) {
+                removeSelectedClass(target.parentNode.parentNode);
+                fetchItems(target.parentNode.parentNode.id);
+            } else if (target.matches('img') || target.matches('div')) {
+                removeSelectedClass(target.parentNode);
                 fetchItems(target.parentNode.id);
             }
         }
@@ -71,6 +74,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //FUNCIONES
 
+    // Secundarias
+    const removeSelectedClass = async (target) => {
+        const divSelected = document.querySelector('.catSelected');
+        if (divSelected) await removeClass(divSelected);
+
+        if (target) target.classList.toggle('catSelected');
+    }
+
+    const removeClass = async (divSelected) => {
+        divSelected.classList.toggle('catSelected');
+    }
+
+    const statusChange = data => {
+        pStatus.textContent = data.status + ' ' + data.statusText;
+        pReadyStatus.innerText = data.ok
+        msg(`URL: ${data.url}`);
+    }
+
+    const msg = mensaje => pError.textContent = mensaje;
+
+    const firstLetterUC = string => {
+        let letra = string.charAt(0);
+        return string.replace(letra, letra.toUpperCase());
+    }
+
+
+    // Local Storage
     const getLocal = () => {
         return JSON.parse(localStorage.getItem("arrayCesta")) || [];
     }
@@ -80,17 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    /*Secundarias*/
-    const statusChange = data => {
-        pStatus.textContent = data.status + ' ' + data.statusText;
-        pReadyStatus.innerText = data.ok
-        msg(`URL: ${data.url}`);
-    }
+    // Principales
 
-    const msg = mensaje => pError.textContent = mensaje;
-
-
-    /*Principales*/
+    //Fetch
     const fetchData = async (data) => {
         try {
             let url;
@@ -129,6 +151,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+
+    // Carrito de la compra
     const emptyCart = () => {
         arrayCesta.splice(0);
         tdFootPrecio.textContent = 'Total: 0€';
@@ -169,13 +193,27 @@ document.addEventListener('DOMContentLoaded', () => {
         paintCart();
     }
 
+    const addToCart = async ({ id, title, price, thumbnail }) => {
+        const objItem = arrayCesta.find(item => item.id == id);
+
+        if (objItem) {
+            const indItem = arrayCesta.findIndex(item => item.id == id)
+            arrayCesta[indItem].cantidad += 1;
+        } else arrayCesta.push({ id, title, price, thumbnail, cantidad: 1 });
+
+        setLocal();
+        paintCart();
+    }
+
+
+    //Creación de Cards
     const crearCardItem = item => {
         const divCardItem = document.createElement('DIV');
         divCardItem.classList.add('divCardItem');
         divCardItem.id = item.id;
 
         const imgItem = document.createElement('IMG');
-        imgItem.src = item.images[2];
+        imgItem.src = item.images[1];
         imgItem.title = item.description;
         imgItem.alt = item.title;
 
@@ -206,15 +244,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const imgStar = document.createElement('IMG');
             if (i <= 5 - nro) imgStar.src = '/assets/star1.png';
             else imgStar.src = '/assets/star2.png';
-            imgStar.setAttribute('width', 9 + (i * 2));
+            imgStar.setAttribute('width', 15 + i);
             fragment.append(imgStar);
         }
         return fragment;
     }
 
+
     const crearCardCategoria = (category) => {
         const divCardCat = document.createElement('DIV');
-        divCardCat.classList.add('divCardCat','categoria');
+        divCardCat.classList.add('divCardCat', 'categoria');
         divCardCat.id = category;
 
         const imgCat = document.createElement('IMG');
@@ -223,31 +262,37 @@ document.addEventListener('DOMContentLoaded', () => {
         imgCat.id = category + 'X';
         imgCat.classList.add('categoria');
 
+        const divH3 = document.createElement('DIV');
+        divH3.classList.add('categoria');
+
         const h3Cat = document.createElement('H3');
-        h3Cat.textContent = category;
+        h3Cat.textContent = firstLetterUC(category);
         h3Cat.classList.add('categoria');
 
-        const pCat = document.createElement('P');
-        pCat.textContent = 'Entrar';
-        pCat.classList.add('categoria');
-
-        divCardCat.append(imgCat, h3Cat, pCat);
+        divH3.append(h3Cat);
+        divCardCat.append(imgCat, divH3);
         return divCardCat;
     }
 
 
+    //Pinta en el DOM
     const paintItems = items => {
         const fragment = document.createDocumentFragment();
 
         items.forEach(item => fragment.append(crearCardItem(item)));
+        divGridContItem.innerHTML = '';
         divGridContItem.append(fragment);
-        secCategorias.classList.toggle('ocultar')
     }
 
     const paintCategories = (categories) => {
         const fragment = document.createDocumentFragment();
         categories.forEach((category) => fragment.append(crearCardCategoria(category)));
         divGridContCat.append(fragment);
+
+        if (ultCategoria != '') {
+            const divSelected = document.querySelector('#' + ultCategoria);
+            divSelected.classList.toggle('catSelected');
+        }
 
         fetchCategoryImg(categories);
     }
@@ -307,18 +352,8 @@ document.addEventListener('DOMContentLoaded', () => {
         tbody.append(fragment);
     }
 
-    const addToCart = async ({ id, title, price, thumbnail }) => {
-        const objItem = arrayCesta.find(item => item.id == id);
 
-        if (objItem) {
-            const indItem = arrayCesta.findIndex(item => item.id == id)
-            arrayCesta[indItem].cantidad += 1;
-        } else arrayCesta.push({ id, title, price, thumbnail, cantidad: 1 });
-
-        setLocal();
-        paintCart();
-    }
-
+    //Buscar la información a traves del fetch
     const fetchID = async (id) => {
         objID.id = id;
         const { ok, response } = await fetchData(objID);
@@ -328,6 +363,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const fetchItems = async (category) => {
+        h2SecItems.textContent = `Categoría ${category.toUpperCase()}.`;
+        h2SecItems.id = category + '!';
+
         objCategory.categoria = category;
         const { ok, response } = await fetchData(objCategory);
 
@@ -354,7 +392,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const fetchCategories = async () => {
-        secItems.classList.toggle('ocultar');
         divCesta.classList.toggle('ocultar');
         const { ok, response } = await fetchData(objCategories);
 
@@ -363,16 +400,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+    //Función inicializadora
     const init = () => {
         const url = location.search;
         const params = new URLSearchParams(url);
 
-        if (params.has('pag')) {
-
+        if (params.has('site')) {
+            ultCategoria = params.get('cat');
+            if (params.get('site') == 'continue') {
+                fetchCategories();
+                if (ultCategoria) fetchItems(params.get('cat'));
+            }
         }
         else fetchCategories();
-
     }
+
 
     paintCart();
     init();
