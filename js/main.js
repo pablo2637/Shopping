@@ -242,8 +242,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (let i = 1; i <= 5; i++) {
             const imgStar = document.createElement('IMG');
-            if (i <= 5 - nro) imgStar.src = '/assets/star1.png';
-            else imgStar.src = '/assets/star2.png';
+            if (i <= 5 - nro) imgStar.src = 'assets/star1.png';
+            else imgStar.src = 'assets/star2.png';
             imgStar.setAttribute('width', 15 + i);
             fragment.append(imgStar);
         }
